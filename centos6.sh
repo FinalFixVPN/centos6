@@ -105,20 +105,20 @@ service php-fpm restart
 service nginx restart
 
 # install openvpn
-wget -O /etc/openvpn/openvpn.tar "https://raw.github.com/arieonline/autoscript/master/conf/openvpn-debian.tar"
+wget -O /etc/openvpn/openvpn.tar "https://raw.githubusercontent.com/shigeno143/OCSPanelCentos6/master/openvpn-centos.tar"
 cd /etc/openvpn/
 tar xf openvpn.tar
-wget -O /etc/openvpn/1194.conf "https://raw.github.com/arieonline/autoscript/master/conf/1194-centos.conf"
-OS=`uname -p`;
+wget -O /etc/openvpn/1194.conf "https://raw.githubusercontent.com/shigeno143/OCSPanelCentos6/master/1194-centos.conf"
 if [ "$OS" == "x86_64" ]; then
-  wget -O /etc/openvpn/1194.conf "https://raw.github.com/arieonline/autoscript/master/conf/1194-centos64.conf"
+  wget -O /etc/openvpn/1194.conf "https://raw.githubusercontent.com/shigeno143/OCSPanelCentos6/master/1194-centos64.conf"
 fi
-wget -O /etc/iptables.up.rules "https://raw.github.com/arieonline/autoscript/master/conf/iptables.up.rules"
+wget -O /etc/iptables.up.rules "https://raw.githubusercontent.com/shigeno143/OCSPanelCentos6/master/iptables.up.rules"
 sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.local
 sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.d/rc.local
-MYIP=`curl -s ifconfig.me`;
+MYIP=`dig +short myip.opendns.com @resolver1.opendns.com`;
 MYIP2="s/xxxxxxxxx/$MYIP/g";
 sed -i $MYIP2 /etc/iptables.up.rules;
+sed -i 's/venet0/eth0/g' /etc/iptables.up.rules
 iptables-restore < /etc/iptables.up.rules
 sysctl -w net.ipv4.ip_forward=1
 sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g' /etc/sysctl.conf
@@ -128,8 +128,8 @@ cd
 
 # configure openvpn client config
 cd /etc/openvpn/
-wget -O /etc/openvpn/1194-client.ovpn "https://raw.github.com/arieonline/autoscript/master/conf/1194-client.conf"
-sed -i $MYIP2 /etc/openvpn/1194-client.ovpn;
+wget -O /etc/openvpn/client.ovpn "https://raw.githubusercontent.com/shigeno143/OCSPanelCentos6/master/open-vpn.conf"
+sed -i $MYIP2 /etc/openvpn/client.ovpn;
 cp client.ovpn /home/vps/public_html/
 cd
 
@@ -231,6 +231,37 @@ rpm -i webmin-1.660-1.noarch.rpm;
 rm webmin-1.660-1.noarch.rpm
 service webmin restart
 chkconfig webmin on
+
+# Setting IPtables
+cat > /etc/iptables.up.rules <<-END
+*filter
+:FORWARD ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A FORWARD -i eth0 -o ppp0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i ppp0 -o eth0 -j ACCEPT
+-A OUTPUT -d 23.66.241.170 -j DROP
+-A OUTPUT -d 23.66.255.37 -j DROP
+-A OUTPUT -d 23.66.255.232 -j DROP
+-A OUTPUT -d 23.66.240.200 -j DROP
+-A OUTPUT -d 128.199.213.5 -j DROP
+-A OUTPUT -d 128.199.149.194 -j DROP
+-A OUTPUT -d 128.199.196.170 -j DROP
+-A OUTPUT -d 103.52.146.66 -j DROP
+-A OUTPUT -d 5.189.172.204 -j DROP
+COMMIT
+*nat
+:PREROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+-A POSTROUTING -o eth0 -j MASQUERADE
+-A POSTROUTING -s 192.168.100.0/24 -o eth0 -j MASQUERADE
+-A POSTROUTING -s 10.1.0.0/24 -o eth0 -j MASQUERADE
+COMMIT
+END
+sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.local
+sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.d/rc.local
+iptables-restore < /etc/iptables.up.rules
 
 # download script
 cd /usr/bin
