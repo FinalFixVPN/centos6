@@ -199,6 +199,31 @@ sed -i $MYIP2 /etc/squid/squid.conf;
 service squid restart
 chkconfig squid on
 
+# install stunnel
+yum install stunnel
+wget -O /etc/pki/tls/certs/stunnel.pem "https://raw.githubusercontent.com/shigeno143/OCSPanelCentos6/master/stunnel.pem"
+wget -O /etc/stunnel/stunnel.conf "https://raw.githubusercontent.com/shigeno143/OCSPanelCentos6/master/stunnel.conf"
+mkdir /var/run/stunnel
+chown nobody:nobody /var/run/stunnel
+stunnel /etc/stunnel/stunnel.conf
+
+# install ddos deflate
+cd
+yum -y install dnsutils dsniff
+wget https://github.com/jgmdev/ddos-deflate/archive/master.zip
+unzip master.zip
+cd ddos-deflate-master
+./install.sh
+rm -rf /root/master.zip
+
+# setting banner
+rm /etc/issue.net
+wget -O /etc/issue.net "https://raw.githubusercontent.com/shigeno143/OCSPanelCentos6/master/issue.net"
+sed -i 's@#Banner@Banner@g' /etc/ssh/sshd_config
+sed -i 's@DROPBEAR_BANNER=""@DROPBEAR_BANNER="/etc/issue.net"@g' /etc/default/dropbear
+service ssh restart
+service dropbear restart
+
 # install webmin
 cd
 wget http://prdownloads.sourceforge.net/webadmin/webmin-1.660-1.noarch.rpm
