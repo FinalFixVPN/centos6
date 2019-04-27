@@ -226,7 +226,7 @@ chkconfig squid on
 
 
 # install stunnel
-apt-get install stunnel4 -y
+yum install stunnel
 cat > /etc/stunnel/stunnel.conf <<-END
 cert = /etc/stunnel/stunnel.pem
 client = no
@@ -245,8 +245,8 @@ openssl req -new -x509 -key key.pem -out cert.pem -days 1095 \
 cat key.pem cert.pem >> /etc/stunnel/stunnel.pem
 
 #konfigurasi stunnel
-sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
-/etc/init.d/stunnel4 restart
+sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel
+/etc/init.d/stunnel restart
 
 # install ddos deflate
 cd
