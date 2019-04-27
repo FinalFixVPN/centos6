@@ -307,8 +307,8 @@ echo "===========================================" | tee -a log-install.txt
 echo ""  | tee -a log-install.txt
 echo "Service"  | tee -a log-install.txt
 echo "-------"  | tee -a log-install.txt
-echo "OpenSSH  : 22, 444"  | tee -a log-install.txt
-echo "Dropbear : 143, 442"  | tee -a log-install.txt
+echo "OpenSSH  : 22, 143"  | tee -a log-install.txt
+echo "Dropbear : 110, 442"  | tee -a log-install.txt
 echo "Squid   : 8000, 8080 (limit to IP SSH)"  | tee -a log-install.txt
 echo "OpenVPN  : TCP 443 (client config : http://$MYIP:81/client.ovpn)"  | tee -a log-install.txt
 echo "badvpn   : badvpn-udpgw port 7300"  | tee -a log-install.txt
