@@ -95,7 +95,7 @@ cd
 wget -O /etc/nginx/nginx.conf "https://raw.github.com/arieonline/autoscript/master/conf/nginx.conf"
 sed -i 's/www-data/nginx/g' /etc/nginx/nginx.conf
 mkdir -p /home/vps/public_html
-echo "<pre>Setup by KangArie | JualSSH.com | @arieonline | 7946F434</pre>" > /home/vps/public_html/index.html
+echo "<pre>Setup by shigeno</pre>" > /home/vps/public_html/index.html
 echo "<?php phpinfo(); ?>" > /home/vps/public_html/info.php
 rm /etc/nginx/conf.d/*
 wget -O /etc/nginx/conf.d/vps.conf "https://raw.github.com/arieonline/autoscript/master/conf/vps.conf"
@@ -130,13 +130,7 @@ cd
 cd /etc/openvpn/
 wget -O /etc/openvpn/1194-client.ovpn "https://raw.github.com/arieonline/autoscript/master/conf/1194-client.conf"
 sed -i $MYIP2 /etc/openvpn/1194-client.ovpn;
-PASS=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1`;
-useradd -M -s /bin/false KangArie
-echo "KangArie:$PASS" | chpasswd
-echo "KangArie" > pass.txt
-echo "$PASS" >> pass.txt
-tar cf client.tar 1194-client.ovpn pass.txt
-cp client.tar /home/vps/public_html/
+cp client.ovpn /home/vps/public_html/
 cd
 
 # install badvpn
@@ -174,7 +168,7 @@ chkconfig sshd on
 
 # install dropbear
 yum -y install dropbear
-echo "OPTIONS=\"-p 109 -p 110 -p 443\"" > /etc/sysconfig/dropbear
+echo "OPTIONS=\"-p 109 -p 110 -p 442\"" > /etc/sysconfig/dropbear
 echo "/bin/false" >> /etc/shells
 service dropbear restart
 chkconfig dropbear on
@@ -213,25 +207,31 @@ rm webmin-1.660-1.noarch.rpm
 service webmin restart
 chkconfig webmin on
 
-# downlaod script
-cd
-wget -O speedtest_cli.py "https://raw.github.com/sivel/speedtest-cli/master/speedtest_cli.py"
-wget -O bench-network.sh "https://raw.github.com/arieonline/autoscript/master/conf/bench-network.sh"
-wget -O ps_mem.py "https://raw.github.com/pixelb/ps_mem/master/ps_mem.py"
-wget -O limit.sh "https://raw.github.com/arieonline/autoscript/master/conf/limit.sh"
-curl http://script.jualssh.com/user-login.sh > user-login.sh
-curl http://script.jualssh.com/user-expire.sh > user-expire.sh
-curl http://script.jualssh.com/user-limit.sh > user-limit.sh
-echo "0 0 * * * root /root/user-expire.sh" > /etc/cron.d/user-expire
-sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.local
-sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.d/rc.local
-chmod +x bench-network.sh
-chmod +x speedtest_cli.py
-chmod +x ps_mem.py
-chmod +x user-login.sh
-chmod +x user-expire.sh
-chmod +x user-limit.sh
-chmod +x limit.sh
+# download script
+cd /usr/bin
+wget -O menu "https://raw.githubusercontent.com/Clrkz/VPSAutoScrptz/master/menu.sh"
+wget -O usernew "https://raw.githubusercontent.com/Clrkz/VPSAutoScrptz/master/usernew.sh"
+wget -O trial "https://raw.githubusercontent.com/Clrkz/VPSAutoScrptz/master/trial.sh"
+wget -O delete "https://raw.githubusercontent.com/Clrkz/VPSAutoScrptz/master/hapus.sh"
+wget -O check "https://raw.githubusercontent.com/Clrkz/VPSAutoScrptz/master/user-login.sh"
+wget -O member "https://raw.githubusercontent.com/Clrkz/VPSAutoScrptz/master/user-list.sh"
+wget -O restart "https://raw.githubusercontent.com/Clrkz/VPSAutoScrptz/master/resvis.sh"
+wget -O speedtest "https://raw.githubusercontent.com/Clrkz/VPSAutoScrptz/master/speedtest_cli.py"
+wget -O info "https://raw.githubusercontent.com/Clrkz/VPSAutoScrptz/master/info.sh"
+wget -O about "https://raw.githubusercontent.com/Clrkz/VPSAutoScrptz/master/about.sh"
+
+echo "0 0 * * * root /sbin/reboot" > /etc/cron.d/reboot
+
+chmod +x menu
+chmod +x usernew
+chmod +x trial
+chmod +x delete
+chmod +x check
+chmod +x member
+chmod +x restart
+chmod +x speedtest
+chmod +x info
+chmod +x about
 
 # cron
 service crond start
@@ -254,40 +254,44 @@ chkconfig crond on
 
 # info
 clear
-echo "JualSSH.com | @arieonline | KangArie | 7946F434"
-echo "==============================================="
-echo ""
-echo "Service"
-echo "-------"
-echo "OpenVPN  : TCP 1194 (client config : http://$MYIP/client.tar)"
-echo "OpenSSH  : 22, 143"
-echo "Dropbear : 109, 110, 443"
-echo "Squid    : 8080 (limit to IP SSH)"
-echo "badvpn   : badvpn-udpgw port 7300"
-echo ""
-echo "Script"
-echo "------"
-echo "./ps_mem.py"
-echo "./speedtest_cli.py --share"
-echo "./bench-network.sh"
-echo "./user-login.sh"
-echo "./user-expire.sh"
-echo "./user-limit.sh 2"
-echo ""
-echo "Account Default (utk SSH dan VPN)"
-echo "---------------"
-echo "User     : KangArie"
-echo "Password : $PASS"
-echo ""
-echo "Fitur lain"
-echo "----------"
-echo "Webmin   : http://$MYIP:10000/"
-echo "vnstat   : http://$MYIP/vnstat/"
-echo "MRTG     : http://$MYIP/mrtg/"
-echo "Timezone : Asia/Jakarta"
-echo "Fail2Ban : [on]"
-echo "IPv6     : [off]"
-echo ""
-echo "SILAHKAN REBOOT VPS ANDA !"
-echo ""
-echo "==============================================="
+echo "Autoscript Include:" | tee log-install.txt
+echo "===========================================" | tee -a log-install.txt
+echo ""  | tee -a log-install.txt
+echo "Service"  | tee -a log-install.txt
+echo "-------"  | tee -a log-install.txt
+echo "OpenSSH  : 22, 444"  | tee -a log-install.txt
+echo "Dropbear : 143, 442"  | tee -a log-install.txt
+echo "SSL      : 443"  | tee -a log-install.txt
+echo "Squid3   : 8000, 8080 (limit to IP SSH)"  | tee -a log-install.txt
+echo "OpenVPN  : TCP 1194 (client config : http://$MYIP:81/client.ovpn)"  | tee -a log-install.txt
+echo "badvpn   : badvpn-udpgw port 7300"  | tee -a log-install.txt
+echo "nginx    : 81"  | tee -a log-install.txt
+echo ""  | tee -a log-install.txt
+echo "Script"  | tee -a log-install.txt
+echo "------"  | tee -a log-install.txt
+echo "menu (Displays a list of available commands)"  | tee -a log-install.txt
+echo "usernew (Creating an SSH Account)"  | tee -a log-install.txt
+echo "trial (Create a Trial Account)"  | tee -a log-install.txt
+echo "delete (Clearing SSH Account)"  | tee -a log-install.txt
+echo "check (Check User Login)"  | tee -a log-install.txt
+echo "member (Check Member SSH)"  | tee -a log-install.txt
+echo "restart (Restart Service dropbear, webmin, squid3, openvpn and ssh)"  | tee -a log-install.txt
+echo "reboot (Reboot VPS)"  | tee -a log-install.txt
+echo "speedtest (Speedtest VPS)"  | tee -a log-install.txt
+echo "info (System Information)"  | tee -a log-install.txt
+echo "about (Information about auto install script)"  | tee -a log-install.txt
+echo ""  | tee -a log-install.txt
+echo "Other features"  | tee -a log-install.txt
+echo "----------"  | tee -a log-install.txt
+echo "Webmin   : http://$MYIP:10000/"  | tee -a log-install.txt
+echo "Timezone : Asia/Manila (GMT +7)"  | tee -a log-install.txt
+echo "IPv6     : [off]"  | tee -a log-install.txt
+echo ""  | tee -a log-install.txt
+echo "Original Script by Fornesia, Rzengineer & Fawzya"  | tee -a log-install.txt
+echo "Modified by Clrkz"  | tee -a log-install.txt
+echo ""  | tee -a log-install.txt
+echo "Installation Log --> /root/log-install.txt"  | tee -a log-install.txt
+echo ""  | tee -a log-install.txt
+echo "VPS AUTO REBOOT TIME HOURS 12 NIGHT"  | tee -a log-install.txt
+echo ""  | tee -a log-install.txt
+echo "==========================================="  | tee -a log-install.txt
