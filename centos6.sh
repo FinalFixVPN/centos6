@@ -70,6 +70,31 @@ yum -y install cmake
 
 yum -y --enablerepo=rpmforge install axel sslh ptunnel unrar
 
+echo "clear" >> .bashrc
+echo 'echo -e "      # ###       ###                  /"' >> .bashrc
+echo 'echo -e "    /  /###  /     ###               #/"' >> .bashrc
+echo 'echo -e "   /  /  ###/       ##               ##"' >> .bashrc
+echo 'echo -e "  /  ##   ##        ##               ##"' >> .bashrc
+echo 'echo -e " /  ###             ##               ##"' >> .bashrc
+echo 'echo -e "##   ##             ##  ###  /###    ##  /##   ######"' >> .bashrc
+echo 'echo -e "##   ##             ##   ###/ #### / ## / ### /#######"' >> .bashrc
+echo 'echo -e "##   ##             ##    ##   ###/  ##/   / /      ##"' >> .bashrc
+echo 'echo -e "##   ##             ##    ##         ##   /         /"' >> .bashrc
+echo 'echo -e "##   ##             ##    ##         ##  /         /"' >> .bashrc
+echo 'echo -e " ##  ##             ##    ##         ## ##        ###"' >> .bashrc
+echo 'echo -e "  ## #      /       ##    ##         ######        ###"' >> .bashrc
+echo 'echo -e "   ###     /        ##    ##         ##  ###        ###"' >> .bashrc
+echo 'echo -e "    ######/         ### / ###        ##   ### /      ##"' >> .bashrc
+echo 'echo -e "      ###            ##/   ###        ##   ##/       ##"' >> .bashrc
+echo 'echo -e "                                                     /"' >> .bashrc
+echo 'echo -e "                                                    /"' >> .bashrc
+echo 'echo -e "                                                   /"' >> .bashrc
+echo 'echo -e "                                                  /"' >> .bashrc
+echo 'echo -e "welcome to the server $HOSTNAME" | lolcat' >> .bashrc
+echo 'echo -e "Script mod by Clrkz"' >> .bashrc
+echo 'echo -e "Type menu to display a list of commands"' >> .bashrc
+echo 'echo -e ""' >> .bashrc
+
 # disable exim
 service exim stop
 chkconfig exim off
