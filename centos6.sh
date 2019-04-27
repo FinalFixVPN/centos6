@@ -224,13 +224,13 @@ sed -i $MYIP2 /etc/squid/squid.conf;
 service squid restart
 chkconfig squid on
 
-# install stunnel
-yum install stunnel
-wget -O /etc/pki/tls/certs/stunnel.pem "https://raw.githubusercontent.com/shigeno143/OCSPanelCentos6/master/stunnel.pem"
-wget -O /etc/stunnel/stunnel.conf "https://raw.githubusercontent.com/shigeno143/OCSPanelCentos6/master/stunnel.conf"
-mkdir /var/run/stunnel
-chown nobody:nobody /var/run/stunnel
-stunnel /etc/stunnel/stunnel.conf
+# install stunnel4
+apt-get -y install stunnel4
+wget -O /etc/stunnel/stunnel.pem "https://raw.githubusercontent.com/daybreakersx/premscript/master/updates/stunnel.pem"
+wget -O /etc/stunnel/stunnel.conf "https://raw.githubusercontent.com/daybreakersx/premscript/master/req/stunnel.conf"
+sed -i $MYIP2 /etc/stunnel/stunnel.conf
+sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
+service stunnel4 restart
 
 # install ddos deflate
 cd
